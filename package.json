@@ -23,7 +23,9 @@
   },
   "dependencies": {
     "ejs": "^3.1.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "node-redis": "^0.1.7",
+    "redis": "^5.8.2"
   },
   "nodemonConfig": {
     "ext": "ts",
