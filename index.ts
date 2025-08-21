@@ -59,8 +59,7 @@ async function connectToRedis() {
   const client = createClient({
     url: redisUrl,
     socket: {
-      tls: true,
-      rejectUnauthorized: false,
+      tls: false
     }
   });
 
