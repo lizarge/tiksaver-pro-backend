@@ -39,7 +39,7 @@ const server = express();
 
             // Save the response to Redis cache
             await redisClient.set('tiktok:songs', JSON.stringify(data), {
-              EX: 60 * 1 * 125, // Cache for 125 minutes
+              EX: (60 * 1) * 120, // Cache for  minutes
             });
 
           } catch (error) {

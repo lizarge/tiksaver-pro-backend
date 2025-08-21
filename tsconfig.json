@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "removeComments": true,
+    "types": ["node"] // Добавьте "node" в массив types
   },
   "include": [
     "./index.ts"
