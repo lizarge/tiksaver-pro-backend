@@ -87,18 +87,18 @@ const server = express();
             var output: any[] = [];
 
             data["data"].forEach((item: any) => {
-
-              output.push(
-                {
-                  tiktok_tag_url: "https://www.tiktok.com/tag/" + getFirstHashtag(item["title"]),
-                  hashtag: getFirstHashtag(item["title"]) ?? "",
-                  hashtag_image_url: item["thumbnail_url"],
-                  description: item["title"],
-                  views:"",
-                  videos:""
-                }
-              )
-
+              if (getFirstHashtag(item["title"]) && getFirstHashtag(item["title"]) != "") {
+                output.push(
+                  {
+                    tiktok_tag_url: "https://www.tiktok.com/tag/" + getFirstHashtag(item["title"]),
+                    hashtag: getFirstHashtag(item["title"]) ?? "",
+                    hashtag_image_url: item["thumbnail_url"],
+                    description: item["title"],
+                    views:"",
+                    videos:""
+                  }
+                )
+              }
             });
 
             res.send(output);
