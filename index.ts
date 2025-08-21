@@ -57,9 +57,9 @@ async function connectToRedis() {
   const client = createClient({
     url: redisUrl,
     socket: {
-    tls: process.env.REDISCLOUD_URL?.startsWith('rediss:'),
-    rejectUnauthorized: false,
-  },
+      tls: true,
+      rejectUnauthorized: false,
+    }
   });
 
   client.on('error', (err) => console.error('Redis Client Error', err));
