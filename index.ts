@@ -11,10 +11,9 @@ const server = express();
   const redisClient = await connectToRedis();
 
   express()
-    .use(express.static(path.join(__dirname, '../public')))
-    .set('views', path.join(__dirname, '../views'))
-    .set('view engine', 'ejs')
-    .get('/', (req, res) => res.render('pages/index'))
+    .get('/',  async (req, res) => {
+      res.send('Suck my dick')
+    })
     .get('/songs', async (req, res) => {
 
 
@@ -39,7 +38,7 @@ const server = express();
 
             // Save the response to Redis cache
             await redisClient.set('tiktok:songs', JSON.stringify(data), {
-              EX: (60 * 1) * 120, // Cache for  minutes
+              EX: (60 * 1) * 120, // Cache for 120 minutes
             });
 
           } catch (error) {

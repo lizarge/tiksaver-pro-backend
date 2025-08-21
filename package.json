@@ -4,7 +4,7 @@
   "description": "A sample TypeScript app using Express",
   "main": "dist/index.js",
   "engines": {
-    "node": "18.x"
+    "node": "23.x"
   },
   "scripts": {
     "start": "node .",
