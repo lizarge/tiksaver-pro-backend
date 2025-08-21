@@ -42,7 +42,7 @@ const server = express();
               output.push(
                 {
                   song_image_url: item["cover"],
-                  artist: item["author"],
+                  artist: item["author"] + "," + item["music_name"],
                   tik_tok_url: item["link"],
                   song:"",
                   videos:""
