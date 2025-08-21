@@ -52,7 +52,7 @@ const server = express();
     })
     .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-})
+})()
 
 async function connectToRedis() {
   const redisUrl = process.env.REDISCLOUD_URL || 'redis://default:oCOcn7NguNFjeBcXWgVeTE2RKC1QdSpj@redis-12819.c10.us-east-1-2.ec2.redns.redis-cloud.com:12819';
