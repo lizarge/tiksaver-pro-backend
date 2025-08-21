@@ -56,6 +56,10 @@ async function connectToRedis() {
   const redisUrl = process.env.REDISCLOUD_URL || 'redis://default:oCOcn7NguNFjeBcXWgVeTE2RKC1QdSpj@redis-12819.c10.us-east-1-2.ec2.redns.redis-cloud.com:12819';
   const client = createClient({
     url: redisUrl,
+    socket: {
+    tls: process.env.REDISCLOUD_URL?.startsWith('rediss:'),
+    rejectUnauthorized: false,
+  },
   });
 
   client.on('error', (err) => console.error('Redis Client Error', err));
