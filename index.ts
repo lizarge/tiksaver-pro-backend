@@ -10,6 +10,8 @@ const server = express();
 
   const redisClient = await connectToRedis();
 
+  console.log("redis ok", redisClient)
+
   express()
     .get('/',  async (req, res) => {
       res.send('Suck my dick')
