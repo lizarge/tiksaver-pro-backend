@@ -1,7 +1,7 @@
 {
-  "name": "typescript-getting-started",
+  "name": "tiksaver-pro-backend",
   "version": "1.0.0",
-  "description": "A sample TypeScript app using Express",
+  "description": "TikSaver Pro backend for trending songs and hashtags",
   "main": "dist/index.js",
   "engines": {
     "node": "23.x"
@@ -15,17 +15,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",
     "nodemon": "^3.1.10",
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "ejs": "^3.1.10",
-    "express": "^5.1.0",
-    "node-redis": "^0.1.7",
-    "redis": "^5.8.2"
+    "express": "^5.1.0"
   },
   "nodemonConfig": {
     "ext": "ts",

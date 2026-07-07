@@ -1,146 +1,141 @@
-import express from 'express';
-import path from 'path';
-
-import { createClient } from 'redis';
+import express from "express";
 
 const PORT = process.env.PORT || 5000;
-const server = express();
+const RAPIDAPI_KEY =
+  process.env.RAPIDAPI_KEY ||
+  "50ba3beb9dmsh32e482dfd3b8de0p186df1jsnc8e1c4bf14e3";
+const RAPIDAPI_HOST =
+  process.env.RAPIDAPI_HOST || "tiktok-trending1.p.rapidapi.com";
 
-(async () => {
-
-  const redisClient = await connectToRedis();
-
-  console.log("redis ok", redisClient)
-
-  express()
-    .get('/',  async (req, res) => {
-      res.send('Suck my dick')
-    })
-    .get('/songs', async (req, res) => {
-
-      const cache = await redisClient.get('tiktok:songs');
-
-      if (cache) {
-        console.log('Cache hit');
-        return res.send(JSON.parse(cache));
-      } else {
-
-          try {
-            const response = await fetch('https://tiktok-trending1.p.rapidapi.com/api/music?country=US',{
-              method: 'GET',
-              headers: {
-                'x-rapidapi-key': '50ba3beb9dmsh32e482dfd3b8de0p186df1jsnc8e1c4bf14e3',
-                'x-rapidapi-host': 'tiktok-trending1.p.rapidapi.com'
-              }
-            }); 
-            const data = await response.json();
-
-            var output: any[] = [];
-
-            data["data"].forEach((item: any) => {
-
-              output.push(
-                {
-                  song_image_url: item["cover"],
-                  artist: item["author"] + "," + item["music_name"],
-                  tik_tok_url: item["link"],
-                  song:"",
-                  videos:""
-                }
-              )
-
-            });
-
-            res.send(output);
-
-            // Save the response to Redis cache
-            await redisClient.set('tiktok:songs', JSON.stringify(output), {
-              EX: (60 * 1) * 120, // Cache for 120 minutes
-            });
-
-          } catch (error) {
-            res.status(500).send('Error: ' + error);
-          }
-
-    }
-
-    })
-    .get('/hashtags', async (req, res) => {
-
-      const cache = await redisClient.get('tiktok:hashtags');
-
-      if (cache) {
-        console.log('Cache hit');
-        return res.send(JSON.parse(cache));
-      } else {
-
-          try {
-            const response = await fetch('https://tiktok-trending1.p.rapidapi.com/api/videos',{
-              method: 'GET',
-              headers: {
-                'x-rapidapi-key': '50ba3beb9dmsh32e482dfd3b8de0p186df1jsnc8e1c4bf14e3',
-                'x-rapidapi-host': 'tiktok-trending1.p.rapidapi.com'
-              }
-            }); 
-            const data = await response.json();
-           
-            var output: any[] = [];
-
-            data["data"].forEach((item: any) => {
-              if (getFirstHashtag(item["title"]) && getFirstHashtag(item["title"]) != "") {
-                output.push(
-                  {
-                    tiktok_tag_url: "https://www.tiktok.com/tag/" + getFirstHashtag(item["title"]),
-                    hashtag: getFirstHashtag(item["title"]) ?? "",
-                    hashtag_image_url: item["thumbnail_url"],
-                    description: item["title"],
-                    views:"",
-                    videos:""
-                  }
-                )
-              }
-            });
-
-            res.send(output);
-
-            // Save the response to Redis cache
-            await redisClient.set('tiktok:hashtags', JSON.stringify(output), {
-              EX: (60 * 1) * 120, // Cache for 120 minutes
-            });
-
-          } catch (error) {
-            res.status(500).send('Error: ' + error);
-          }
-
-    }
-
-    })
-    .listen(PORT, () => console.log(`Listening on ${PORT}`));
-
-})()
-
-async function connectToRedis() {
-  const redisUrl = process.env.REDISCLOUD_URL || 'redis://default:oCOcn7NguNFjeBcXWgVeTE2RKC1QdSpj@redis-12819.c10.us-east-1-2.ec2.redns.redis-cloud.com:12819';
-  const client = createClient({
-    url: redisUrl,
-    socket: {
-      tls: false
-    }
-  });
-
-  client.on('error', (err) => console.error('Redis Client Error', err));
-
-  await client.connect();
-  return client;
+interface CacheEntry<T> {
+  data: T;
+  expiresAt: number;
 }
 
-function getFirstHashtag(text:string) {
-  const regex = /#(\w+)/; // Matches '#' followed by one or more word characters
-  const match = text.match(regex);
+const memoryCache: Map<string, CacheEntry<any>> = new Map();
 
-  if (match && match[1]) {
-    return match[1]; // Returns the captured group (the hashtag without '#')
-  } else {
-    return null; // No hashtag found
+function getCache<T>(key: string): T | null {
+  const entry = memoryCache.get(key);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    memoryCache.delete(key);
+    return null;
   }
+  return entry.data;
+}
+
+function setCache<T>(key: string, data: T, ttlSeconds: number): void {
+  memoryCache.set(key, {
+    data,
+    expiresAt: Date.now() + ttlSeconds * 1000,
+  });
+}
+
+const server = express();
+
+server.get("/", (req, res) => {
+  res.send("TikSaver Pro API");
+});
+
+server.get("/songs", async (req, res) => {
+  const cacheKey = "tiktok:songs";
+  const cached = getCache<any[]>(cacheKey);
+
+  if (cached) {
+    console.log("Cache hit /songs");
+    return res.send(cached);
+  }
+
+  try {
+    const response = await fetch(
+      "https://" + RAPIDAPI_HOST + "/api/music?country=US",
+      {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": RAPIDAPI_KEY,
+          "x-rapidapi-host": RAPIDAPI_HOST,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`RapidAPI returned ${response.status}`);
+    }
+
+    const data = await response.json();
+    const output: any[] = [];
+
+    data["data"].forEach((item: any) => {
+      output.push({
+        song_image_url: item["cover"],
+        artist: item["author"] + "," + item["music_name"],
+        tik_tok_url: item["link"],
+        song: "",
+        videos: "",
+      });
+    });
+
+    setCache(cacheKey, output, 120 * 60); // 120 minutes
+    res.send(output);
+  } catch (error) {
+    console.error("Error fetching songs:", error);
+    res.status(500).send("Error: " + error);
+  }
+});
+
+server.get("/hashtags", async (req, res) => {
+  const cacheKey = "tiktok:hashtags";
+  const cached = getCache<any[]>(cacheKey);
+
+  if (cached) {
+    console.log("Cache hit /hashtags");
+    return res.send(cached);
+  }
+
+  try {
+    const response = await fetch("https://" + RAPIDAPI_HOST + "/api/videos", {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": RAPIDAPI_KEY,
+        "x-rapidapi-host": RAPIDAPI_HOST,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`RapidAPI returned ${response.status}`);
+    }
+
+    const data = await response.json();
+    const output: any[] = [];
+
+    data["data"].forEach((item: any) => {
+      const firstHashtag = getFirstHashtag(item["title"]);
+      if (firstHashtag) {
+        output.push({
+          tiktok_tag_url: "https://www.tiktok.com/tag/" + firstHashtag,
+          hashtag: firstHashtag,
+          hashtag_image_url: item["thumbnail_url"],
+          description: item["title"],
+          views: "",
+          videos: "",
+        });
+      }
+    });
+
+    setCache(cacheKey, output, 120 * 60); // 120 minutes
+    res.send(output);
+  } catch (error) {
+    console.error("Error fetching hashtags:", error);
+    res.status(500).send("Error: " + error);
+  }
+});
+
+server.listen(PORT, () => {
+  console.log(`Listening on ${PORT}`);
+});
+
+function getFirstHashtag(text: string): string | null {
+  const regex = /#(\w+)/;
+  const match = text.match(regex);
+  return match && match[1] ? match[1] : null;
 }
