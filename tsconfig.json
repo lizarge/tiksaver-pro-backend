@@ -1,17 +1,13 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
     "module": "commonjs",
     "outDir": "./dist",
     "strict": true,
-    "target": "ES2019",
-
+    "target": "ES2022",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "removeComments": true,
-    "types": ["node"] // Добавьте "node" в массив types
+    "types": ["node"],
   },
-  "include": [
-    "./index.ts"
-  ]
+  "include": ["./index.ts"],
 }
