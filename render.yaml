@@ -9,6 +9,6 @@ services:
       - key: NODE_ENV
         value: production
       - key: RAPIDAPI_KEY
-        sync: false
+        value: 50ba3beb9dmsh32e482dfd3b8de0p186df1jsnc8e1c4bf14e3
       - key: RAPIDAPI_HOST
         value: tiktok-trending1.p.rapidapi.com
