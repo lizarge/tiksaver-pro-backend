@@ -5,3 +5,6 @@ services:
     plan: free
     buildCommand: npm install && npm run build
     startCommand: npm start
+    envVars:
+      - key: TRENDSMCP_API_KEY
+        sync: false

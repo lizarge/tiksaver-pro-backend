@@ -1,6 +1,8 @@
 import express from "express";
+import { TrendsMcpClient } from "tiktok-trends-api";
 
 const PORT = process.env.PORT || 5000;
+const TRENDSMCP_API_KEY = process.env.TRENDSMCP_API_KEY || "";
 
 interface CacheEntry<T> {
   data: T;
@@ -25,29 +27,6 @@ function setCache<T>(key: string, data: T, ttlSeconds: number): void {
     expiresAt: Date.now() + ttlSeconds * 1000,
   });
 }
-
-const trendingHashtags = [
-  "fyp",
-  "foryou",
-  "trending",
-  "viral",
-  "love",
-  "funny",
-  "dance",
-  "music",
-  "comedy",
-  "beauty",
-  "fashion",
-  "food",
-  "travel",
-  "fitness",
-  "meme",
-  "cat",
-  "dog",
-  "asmr",
-  "makeup",
-  "gaming",
-];
 
 const server = express();
 
@@ -126,122 +105,48 @@ server.get("/hashtags", async (req, res) => {
     return res.send(cached);
   }
 
+  if (!TRENDSMCP_API_KEY) {
+    console.error("TRENDSMCP_API_KEY is not configured");
+    return res.status(500).send({
+      error:
+        "TRENDSMCP_API_KEY is not configured. Sign up at https://trendsmcp.ai to get a free API key.",
+    });
+  }
+
   try {
-    const results: any[] = [];
+    const client = new TrendsMcpClient({ apiKey: TRENDSMCP_API_KEY });
 
-    for (const tag of trendingHashtags) {
-      const item = await fetchTikTokHashtag(tag);
-      if (item) {
-        results.push(item);
-      }
-      // Small delay to avoid rate limiting
-      await sleep(150);
-    }
+    const trending = await client.getTopTrends({
+      type: "TikTok Trending Hashtags",
+      limit: 20,
+    });
 
-    setCache(cacheKey, results, 120 * 60); // 120 minutes
-    res.send(results);
+    const items = trending?.data || [];
+
+    const output: any[] = items.map((item: any) => {
+      const rank = Array.isArray(item) ? item[0] : "";
+      const hashtag = Array.isArray(item) ? item[1] : item;
+
+      return {
+        tiktok_tag_url: `https://www.tiktok.com/tag/${encodeURIComponent(
+          hashtag,
+        )}`,
+        hashtag: hashtag,
+        hashtag_image_url:
+          "https://via.placeholder.com/300x300/FF0050/FFFFFF?text=%23",
+        description: `${hashtag} — trending hashtag on TikTok`,
+        views: rank ? `#${rank}` : "",
+        videos: "",
+      };
+    });
+
+    setCache(cacheKey, output, 360 * 60); // Cache for 6 hours to stay within free tier
+    res.send(output);
   } catch (error) {
-    console.error("Error fetching hashtags:", error);
+    console.error("Error fetching hashtags from TrendsMCP:", error);
     res.status(500).send("Error: " + error);
   }
 });
-
-async function fetchTikTokHashtag(tag: string): Promise<any | null> {
-  try {
-    const url = `https://www.tiktok.com/api/challenge/detail/?challengeName=${encodeURIComponent(
-      tag,
-    )}&aid=1988`;
-
-    const response = await fetch(url, {
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Cache-Control": "no-cache",
-        Pragma: "no-cache",
-        Referer: `https://www.tiktok.com/tag/${tag}`,
-        "Sec-Ch-Ua":
-          '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": '"Windows"',
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-origin",
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      },
-    });
-
-    if (!response.ok) {
-      console.error(
-        `TikTok hashtag ${tag} returned HTTP ${response.status}`,
-      );
-      return null;
-    }
-
-    const text = await response.text();
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
-      console.error(
-        `TikTok hashtag ${tag} returned non-JSON:`,
-        text.slice(0, 200),
-      );
-      return null;
-    }
-
-    const challenge = data?.challengeInfo?.challenge;
-    const stats = data?.challengeInfo?.statsV2;
-
-    if (!challenge || !stats) {
-      console.error(
-        `TikTok hashtag ${tag} missing challenge/stats. Response keys:`,
-        Object.keys(data || {}),
-      );
-      return null;
-    }
-
-    const title = challenge.title || tag;
-    const viewCount = parseInt(stats.viewCount || "0", 10);
-    const videoCount = parseInt(stats.videoCount || "0", 10);
-
-    return {
-      tiktok_tag_url: `https://www.tiktok.com/tag/${title}`,
-      hashtag: title,
-      hashtag_image_url:
-        challenge.profileMedium ||
-        challenge.coverMedium ||
-        "https://via.placeholder.com/300x300/FF0050/FFFFFF?text=%23",
-      description: `${title} hashtag on TikTok`,
-      views: formatNumber(viewCount),
-      videos: formatNumber(videoCount),
-    };
-  } catch (error) {
-    console.error(`Error fetching hashtag ${tag}:`, error);
-    return null;
-  }
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function formatNumber(n: number): string {
-  if (n >= 1_000_000_000_000) {
-    return (n / 1_000_000_000_000).toFixed(1).replace(/\.0$/, "") + "T";
-  }
-  if (n >= 1_000_000_000) {
-    return (n / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
-  }
-  if (n >= 1_000_000) {
-    return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-  }
-  if (n >= 1_000) {
-    return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
-  }
-  return String(n);
-}
 
 server.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);
