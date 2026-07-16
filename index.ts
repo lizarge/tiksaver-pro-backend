@@ -1,11 +1,6 @@
 import express from "express";
 
 const PORT = process.env.PORT || 5000;
-const RAPIDAPI_KEY =
-  process.env.RAPIDAPI_KEY ||
-  "50ba3beb9dmsh32e482dfd3b8de0p186df1jsnc8e1c4bf14e3";
-const RAPIDAPI_HOST =
-  process.env.RAPIDAPI_HOST || "tiktok-trending1.p.rapidapi.com";
 
 interface CacheEntry<T> {
   data: T;
@@ -31,198 +26,27 @@ function setCache<T>(key: string, data: T, ttlSeconds: number): void {
   });
 }
 
-const fallbackSongs = [
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Tyla,Water",
-    tik_tok_url: "https://www.tiktok.com/music/Water-1234567890",
-    song: "",
-    videos: "",
-  },
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Doechii,Anxiety",
-    tik_tok_url: "https://www.tiktok.com/music/Anxiety-0987654321",
-    song: "",
-    videos: "",
-  },
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Billie Eilish,BIRDS OF A FEATHER",
-    tik_tok_url: "https://www.tiktok.com/music/BIRDS-OF-A-FEATHER-111222333",
-    song: "",
-    videos: "",
-  },
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Sabrina Carpenter,Espresso",
-    tik_tok_url: "https://www.tiktok.com/music/Espresso-444555666",
-    song: "",
-    videos: "",
-  },
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Post Malone,I Had Some Help",
-    tik_tok_url: "https://www.tiktok.com/music/I-Had-Some-Help-777888999",
-    song: "",
-    videos: "",
-  },
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Chappell Roan,Good Luck Babe!",
-    tik_tok_url: "https://www.tiktok.com/music/Good-Luck-Babe-000111222",
-    song: "",
-    videos: "",
-  },
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Tommy Richman,MILLION DOLLAR BABY",
-    tik_tok_url: "https://www.tiktok.com/music/MILLION-DOLLAR-BABY-333444555",
-    song: "",
-    videos: "",
-  },
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Artemas,I Like The Way You Kiss Me",
-    tik_tok_url: "https://www.tiktok.com/music/I-Like-The-Way-You-Kiss-Me-666777888",
-    song: "",
-    videos: "",
-  },
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Hozier,Too Sweet",
-    tik_tok_url: "https://www.tiktok.com/music/Too-Sweet-999000111",
-    song: "",
-    videos: "",
-  },
-  {
-    song_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    artist: "Teddy Swims,Lose Control",
-    tik_tok_url: "https://www.tiktok.com/music/Lose-Control-222333444",
-    song: "",
-    videos: "",
-  },
-];
-
-const fallbackHashtags = [
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/fyp",
-    hashtag: "fyp",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "For You Page #fyp #foryou #viral",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/foryou",
-    hashtag: "foryou",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "For You #foryou #fyp #trending",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/trending",
-    hashtag: "trending",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Trending now #trending #viral #fyp",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/viral",
-    hashtag: "viral",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Go viral #viral #fyp #trending",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/love",
-    hashtag: "love",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Love #love #fyp #viral",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/funny",
-    hashtag: "funny",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Funny videos #funny #fyp #viral",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/dance",
-    hashtag: "dance",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Dance trends #dance #fyp #trending",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/music",
-    hashtag: "music",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Music #music #fyp #viral",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/comedy",
-    hashtag: "comedy",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Comedy #comedy #funny #fyp",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/beauty",
-    hashtag: "beauty",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Beauty #beauty #fyp #makeup",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/fashion",
-    hashtag: "fashion",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Fashion #fashion #fyp #style",
-    views: "",
-    videos: "",
-  },
-  {
-    tiktok_tag_url: "https://www.tiktok.com/tag/food",
-    hashtag: "food",
-    hashtag_image_url:
-      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
-    description: "Food #food #fyp #viral",
-    views: "",
-    videos: "",
-  },
+const trendingHashtags = [
+  "fyp",
+  "foryou",
+  "trending",
+  "viral",
+  "love",
+  "funny",
+  "dance",
+  "music",
+  "comedy",
+  "beauty",
+  "fashion",
+  "food",
+  "travel",
+  "fitness",
+  "meme",
+  "cat",
+  "dog",
+  "asmr",
+  "makeup",
+  "gaming",
 ];
 
 const server = express();
@@ -241,43 +65,55 @@ server.get("/songs", async (req, res) => {
   }
 
   try {
-    const response = await fetch(
-      "https://" + RAPIDAPI_HOST + "/api/music?country=US",
-      {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key": RAPIDAPI_KEY,
-          "x-rapidapi-host": RAPIDAPI_HOST,
-        },
+    const region = (req.query.region as string) || "us";
+    const feedUrl =
+      region.toLowerCase() === "us"
+        ? "https://itunes.apple.com/us/rss/topsongs/limit=25/json"
+        : `https://itunes.apple.com/${region.toLowerCase()}/rss/topsongs/limit=25/json`;
+
+    const response = await fetch(feedUrl, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "TikSaverPro/1.0",
       },
-    );
+    });
 
     if (!response.ok) {
-      throw new Error(`RapidAPI returned ${response.status}`);
+      throw new Error(`iTunes returned ${response.status}`);
     }
 
     const data = await response.json();
-    const output: any[] = [];
+    const entries = data?.feed?.entry || [];
 
-    if (Array.isArray(data["data"]) && data["data"].length > 0) {
-      data["data"].forEach((item: any) => {
-        output.push({
-          song_image_url: item["cover"],
-          artist: item["author"] + "," + item["music_name"],
-          tik_tok_url: item["link"],
-          song: "",
-          videos: "",
-        });
-      });
-    }
+    const output: any[] = entries.map((entry: any) => {
+      const images = entry["im:image"] || [];
+      const image =
+        images.find((img: any) => img.attributes?.height === "170")?.label ||
+        images[images.length - 1]?.label ||
+        "";
 
-    const result = output.length > 0 ? output : fallbackSongs;
-    setCache(cacheKey, result, 120 * 60); // 120 minutes
-    res.send(result);
+      const title = entry["im:name"]?.label || "";
+      const artist = entry["im:artist"]?.label || "";
+      const link =
+        entry.link?.find((l: any) => l.attributes?.rel === "alternate")
+          ?.attributes?.href ||
+        entry.link?.attributes?.href ||
+        "";
+
+      return {
+        song_image_url: image,
+        artist: artist,
+        tik_tok_url: link,
+        song: title,
+        videos: "",
+      };
+    });
+
+    setCache(cacheKey, output, 120 * 60); // 120 minutes
+    res.send(output);
   } catch (error) {
-    console.error("Error fetching songs, using fallback:", error);
-    setCache(cacheKey, fallbackSongs, 120 * 60);
-    res.send(fallbackSongs);
+    console.error("Error fetching songs:", error);
+    res.status(500).send("Error: " + error);
   }
 });
 
@@ -291,53 +127,85 @@ server.get("/hashtags", async (req, res) => {
   }
 
   try {
-    const response = await fetch("https://" + RAPIDAPI_HOST + "/api/videos", {
-      method: "GET",
-      headers: {
-        "x-rapidapi-key": RAPIDAPI_KEY,
-        "x-rapidapi-host": RAPIDAPI_HOST,
-      },
-    });
+    const hashtags = await Promise.all(
+      trendingHashtags.map((tag) => fetchTikTokHashtag(tag)),
+    );
 
-    if (!response.ok) {
-      throw new Error(`RapidAPI returned ${response.status}`);
-    }
+    const output = hashtags.filter((item) => item !== null) as any[];
 
-    const data = await response.json();
-    const output: any[] = [];
-
-    if (Array.isArray(data["data"]) && data["data"].length > 0) {
-      data["data"].forEach((item: any) => {
-        const firstHashtag = getFirstHashtag(item["title"]);
-        if (firstHashtag) {
-          output.push({
-            tiktok_tag_url: "https://www.tiktok.com/tag/" + firstHashtag,
-            hashtag: firstHashtag,
-            hashtag_image_url: item["thumbnail_url"],
-            description: item["title"],
-            views: "",
-            videos: "",
-          });
-        }
-      });
-    }
-
-    const result = output.length > 0 ? output : fallbackHashtags;
-    setCache(cacheKey, result, 120 * 60); // 120 minutes
-    res.send(result);
+    setCache(cacheKey, output, 120 * 60); // 120 minutes
+    res.send(output);
   } catch (error) {
-    console.error("Error fetching hashtags, using fallback:", error);
-    setCache(cacheKey, fallbackHashtags, 120 * 60);
-    res.send(fallbackHashtags);
+    console.error("Error fetching hashtags:", error);
+    res.status(500).send("Error: " + error);
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`Listening on ${ PORT }`);
-});
+async function fetchTikTokHashtag(tag: string): Promise<any | null> {
+  try {
+    const response = await fetch(
+      `https://www.tiktok.com/api/challenge/detail/?challengeName=${encodeURIComponent(
+        tag,
+      )}&aid=1988`,
+      {
+        headers: {
+          Accept: "application/json",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          Referer: "https://www.tiktok.com/",
+        },
+      },
+    );
 
-function getFirstHashtag(text: string): string | null {
-  const regex = /#(\w+)/;
-  const match = text.match(regex);
-  return match && match[1] ? match[1] : null;
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    const challenge = data?.challengeInfo?.challenge;
+    const stats = data?.challengeInfo?.statsV2;
+
+    if (!challenge || !stats) {
+      return null;
+    }
+
+    const title = challenge.title || tag;
+    const viewCount = parseInt(stats.viewCount || "0", 10);
+    const videoCount = parseInt(stats.videoCount || "0", 10);
+
+    return {
+      tiktok_tag_url: `https://www.tiktok.com/tag/${title}`,
+      hashtag: title,
+      hashtag_image_url:
+        challenge.profileMedium ||
+        challenge.coverMedium ||
+        "https://via.placeholder.com/300x300/FF0050/FFFFFF?text=%23",
+      description: `${title} hashtag on TikTok`,
+      views: formatNumber(viewCount),
+      videos: formatNumber(videoCount),
+    };
+  } catch (error) {
+    console.error(`Error fetching hashtag ${tag}:`, error);
+    return null;
+  }
 }
+
+function formatNumber(n: number): string {
+  if (n >= 1_000_000_000_000) {
+    return (n / 1_000_000_000_000).toFixed(1).replace(/\.0$/, "") + "T";
+  }
+  if (n >= 1_000_000_000) {
+    return (n / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+  }
+  if (n >= 1_000_000) {
+    return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+  if (n >= 1_000) {
+    return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+  }
+  return String(n);
+}
+
+server.listen(PORT, () => {
+  console.log(`Listening on ${PORT}`);
+});
