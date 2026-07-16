@@ -127,14 +127,19 @@ server.get("/hashtags", async (req, res) => {
   }
 
   try {
-    const hashtags = await Promise.all(
-      trendingHashtags.map((tag) => fetchTikTokHashtag(tag)),
-    );
+    const results: any[] = [];
 
-    const output = hashtags.filter((item) => item !== null) as any[];
+    for (const tag of trendingHashtags) {
+      const item = await fetchTikTokHashtag(tag);
+      if (item) {
+        results.push(item);
+      }
+      // Small delay to avoid rate limiting
+      await sleep(150);
+    }
 
-    setCache(cacheKey, output, 120 * 60); // 120 minutes
-    res.send(output);
+    setCache(cacheKey, results, 120 * 60); // 120 minutes
+    res.send(results);
   } catch (error) {
     console.error("Error fetching hashtags:", error);
     res.status(500).send("Error: " + error);
@@ -143,29 +148,57 @@ server.get("/hashtags", async (req, res) => {
 
 async function fetchTikTokHashtag(tag: string): Promise<any | null> {
   try {
-    const response = await fetch(
-      `https://www.tiktok.com/api/challenge/detail/?challengeName=${encodeURIComponent(
-        tag,
-      )}&aid=1988`,
-      {
-        headers: {
-          Accept: "application/json",
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          Referer: "https://www.tiktok.com/",
-        },
+    const url = `https://www.tiktok.com/api/challenge/detail/?challengeName=${encodeURIComponent(
+      tag,
+    )}&aid=1988`;
+
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        Referer: `https://www.tiktok.com/tag/${tag}`,
+        "Sec-Ch-Ua":
+          '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": '"Windows"',
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       },
-    );
+    });
 
     if (!response.ok) {
+      console.error(
+        `TikTok hashtag ${tag} returned HTTP ${response.status}`,
+      );
       return null;
     }
 
-    const data = await response.json();
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error(
+        `TikTok hashtag ${tag} returned non-JSON:`,
+        text.slice(0, 200),
+      );
+      return null;
+    }
+
     const challenge = data?.challengeInfo?.challenge;
     const stats = data?.challengeInfo?.statsV2;
 
     if (!challenge || !stats) {
+      console.error(
+        `TikTok hashtag ${tag} missing challenge/stats. Response keys:`,
+        Object.keys(data || {}),
+      );
       return null;
     }
 
@@ -188,6 +221,10 @@ async function fetchTikTokHashtag(tag: string): Promise<any | null> {
     console.error(`Error fetching hashtag ${tag}:`, error);
     return null;
   }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function formatNumber(n: number): string {
