@@ -34,7 +34,7 @@ function setCache<T>(key: string, data: T, ttlSeconds: number): void {
 const fallbackSongs = [
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/8f4b6f8f0e5f3e2e1d4c5b6a7f8e9d0c~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Tyla,Water",
     tik_tok_url: "https://www.tiktok.com/music/Water-1234567890",
     song: "",
@@ -42,7 +42,7 @@ const fallbackSongs = [
   },
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Doechii,Anxiety",
     tik_tok_url: "https://www.tiktok.com/music/Anxiety-0987654321",
     song: "",
@@ -50,7 +50,7 @@ const fallbackSongs = [
   },
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/abcdef1234567890abcdef1234567890~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Billie Eilish,BIRDS OF A FEATHER",
     tik_tok_url: "https://www.tiktok.com/music/BIRDS-OF-A-FEATHER-111222333",
     song: "",
@@ -58,7 +58,7 @@ const fallbackSongs = [
   },
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/0987654321abcdef0987654321abcdef~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Sabrina Carpenter,Espresso",
     tik_tok_url: "https://www.tiktok.com/music/Espresso-444555666",
     song: "",
@@ -66,7 +66,7 @@ const fallbackSongs = [
   },
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/fedcba1234567890fedcba1234567890~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Post Malone,I Had Some Help",
     tik_tok_url: "https://www.tiktok.com/music/I-Had-Some-Help-777888999",
     song: "",
@@ -74,7 +74,7 @@ const fallbackSongs = [
   },
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Chappell Roan,Good Luck Babe!",
     tik_tok_url: "https://www.tiktok.com/music/Good-Luck-Babe-000111222",
     song: "",
@@ -82,7 +82,7 @@ const fallbackSongs = [
   },
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Tommy Richman,MILLION DOLLAR BABY",
     tik_tok_url: "https://www.tiktok.com/music/MILLION-DOLLAR-BABY-333444555",
     song: "",
@@ -90,7 +90,7 @@ const fallbackSongs = [
   },
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Artemas,I Like The Way You Kiss Me",
     tik_tok_url: "https://www.tiktok.com/music/I-Like-The-Way-You-Kiss-Me-666777888",
     song: "",
@@ -98,7 +98,7 @@ const fallbackSongs = [
   },
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Hozier,Too Sweet",
     tik_tok_url: "https://www.tiktok.com/music/Too-Sweet-999000111",
     song: "",
@@ -106,7 +106,7 @@ const fallbackSongs = [
   },
   {
     song_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     artist: "Teddy Swims,Lose Control",
     tik_tok_url: "https://www.tiktok.com/music/Lose-Control-222333444",
     song: "",
@@ -119,7 +119,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/fyp",
     hashtag: "fyp",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/fyp~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "For You Page #fyp #foryou #viral",
     views: "",
     videos: "",
@@ -128,7 +128,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/foryou",
     hashtag: "foryou",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/foryou~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "For You #foryou #fyp #trending",
     views: "",
     videos: "",
@@ -137,7 +137,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/trending",
     hashtag: "trending",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/trending~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Trending now #trending #viral #fyp",
     views: "",
     videos: "",
@@ -146,7 +146,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/viral",
     hashtag: "viral",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/viral~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Go viral #viral #fyp #trending",
     views: "",
     videos: "",
@@ -155,7 +155,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/love",
     hashtag: "love",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/love~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Love #love #fyp #viral",
     views: "",
     videos: "",
@@ -164,7 +164,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/funny",
     hashtag: "funny",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/funny~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Funny videos #funny #fyp #viral",
     views: "",
     videos: "",
@@ -173,7 +173,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/dance",
     hashtag: "dance",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/dance~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Dance trends #dance #fyp #trending",
     views: "",
     videos: "",
@@ -182,7 +182,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/music",
     hashtag: "music",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/music~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Music #music #fyp #viral",
     views: "",
     videos: "",
@@ -191,7 +191,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/comedy",
     hashtag: "comedy",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/comedy~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Comedy #comedy #funny #fyp",
     views: "",
     videos: "",
@@ -200,7 +200,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/beauty",
     hashtag: "beauty",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/beauty~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Beauty #beauty #fyp #makeup",
     views: "",
     videos: "",
@@ -209,7 +209,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/fashion",
     hashtag: "fashion",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/fashion~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Fashion #fashion #fyp #style",
     views: "",
     videos: "",
@@ -218,7 +218,7 @@ const fallbackHashtags = [
     tiktok_tag_url: "https://www.tiktok.com/tag/food",
     hashtag: "food",
     hashtag_image_url:
-      "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/food~tplv-tiktokx-cropcenter:100:100.jpeg",
+      "https://via.placeholder.com/300x300/000000/FFFFFF?text=Music",
     description: "Food #food #fyp #viral",
     views: "",
     videos: "",
